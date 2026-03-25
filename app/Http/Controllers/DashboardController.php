@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Supports\Number;
 use Carbon\Carbon;
 use App\Models\Account;
 use App\Models\Transaction;
@@ -64,7 +65,6 @@ class DashboardController extends Controller
         return view('dashboard', compact('totalIncome', 'totalExpense', 'accounts', 'transactions', 'balanceHistory', 'totalBalance', 'totalAccountsBalance', 'notifications', 'dailyMessage'));
     }
 
-    // Endpoint untuk mengambil data dashboard untuk chart
     public function dashboardData()
     {
         $userId = Auth::id();
@@ -85,7 +85,14 @@ class DashboardController extends Controller
         $expense = (int) ($totals->total_expense ?? 0);
 
         // 🔹 Monthly balance
-        $balanceHistory = Transaction::where('user_id', $userId)->selectRaw('DATE_FORMAT(transaction_date, "%Y-%m") as date, SUM(amount) as balance')->groupBy('date')->orderBy('date', 'asc')->get()->map(fn($item) => ['date' => $item->date, 'balance' => (int) $item->balance]);
+        $balanceHistory = Transaction::where('user_id', $userId)
+            ->selectRaw('DATE_FORMAT(transaction_date, "%Y-%m") as date, SUM(amount) as balance')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get()->map(fn($item) => [
+                'date' => $item->date,
+                'balance' => (int) $item->balance
+            ]);
 
         // 🔹 Budget per category
         $budgetUsage = \DB::table('budgets')
@@ -107,7 +114,7 @@ class DashboardController extends Controller
             )
             ->get();
 
-        // 🔹 Total budget vs remaining budget this month
+        // 🔹 Total budget vs. remaining budget this month
         $totalBudget = $budgetUsage->sum('budget');
         $totalSpent = $budgetUsage->sum('spent');
         $remainingBudget = $totalBudget - $totalSpent;
@@ -130,7 +137,7 @@ class DashboardController extends Controller
             'totalBudget' => $totalBudget,
             'totalSpent' => $totalSpent,
             'remainingBudget' => $remainingBudget,
-            'dailyExpenseAvg' => $dailyExpenseAvg,
+            'dailyExpenseAvg' => Number::short($dailyExpenseAvg),
             'predictedBalance' => $predictedBalance,
             'topCategories' => $topCategories,
         ]);

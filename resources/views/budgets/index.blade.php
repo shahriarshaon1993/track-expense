@@ -8,7 +8,7 @@
         <div id="budgetModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden px-4">
             <div
                 class="bg-white dark:bg-gray-900 rounded-lg p-6 sm:p-8 max-w-lg w-full shadow-lg relative sm:max-w-sm md:max-w-md lg:max-w-lg transition-all">
-                
+
                 <!-- Illustration -->
                 <div class="flex justify-center">
                     <img src="https://cdn-icons-png.flaticon.com/512/3616/3616763.png" alt="Budget Illustration"
@@ -76,6 +76,21 @@
                     class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-medium rounded-md transition-colors duration-300 ease-in-out shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                     + Add Budget
                 </a>
+            </div>
+
+            <h2 class="text-xl font-bold mb-4">Budgets for {{ \Carbon\Carbon::parse($currentMonth.'-01')->format('F Y') }}</h2>
+
+            <div class="flex space-x-4 mb-6 overflow-x-auto">
+                @foreach($months as $month)
+                    @php
+                        $formattedMonth = \Carbon\Carbon::parse($month.'-01')->format('F Y');
+                    @endphp
+                    <a href="{{ route('budgets.index', ['month'=>$month]) }}"
+                       class="px-3 py-1 rounded-full border
+                  {{ $currentMonth == $month ? 'bg-indigo-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300' }}">
+                        {{ $formattedMonth }}
+                    </a>
+                @endforeach
             </div>
 
             <!-- Budget Grid -->

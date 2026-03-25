@@ -12,15 +12,26 @@ class BudgetController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index()
+    public function index(Request $request)
     {
-        $budgets = Budget::where('user_id', Auth::id())->with('category')->paginate(10);
-        return view('budgets.index', compact('budgets'));
+        $currentMonth = $request->get('month', now()->format('Y-m'));
+
+        $budgets = Budget::where('user_id', Auth::id())
+            ->where('month', $currentMonth)
+            ->with('category')
+            ->orderBy('category_id')
+            ->paginate(10);
+
+        $months = Budget::where('user_id', Auth::id())
+            ->select('month')->distinct()
+            ->pluck('month');
+
+        return view('budgets.index', compact('budgets', 'currentMonth', 'months'));
     }
 
     public function create()
     {
-        $categories = auth()->user()->categories; // Ambil kategori dari pivot table user_categories
+        $categories = auth()->user()->categories;
         return view('budgets.create', compact('categories'));
     }
 
@@ -36,7 +47,7 @@ class BudgetController extends Controller
             'user_id' => auth()->id(),
             'category_id' => $request->category_id,
             'amount' => $request->amount,
-            'spent' => 0, // Awalnya 0
+            'spent' => 0,
             'month' => $request->month,
         ]);
 

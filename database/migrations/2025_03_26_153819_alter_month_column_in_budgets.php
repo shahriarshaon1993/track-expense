@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up() {
         Schema::table('budgets', function (Blueprint $table) {
-            $table->string('month', 7)->change(); // Ubah jadi VARCHAR(7)
+            $table->string('month', 7)->change();
         });
     }
 
     public function down() {
         Schema::table('budgets', function (Blueprint $table) {
-            $table->date('month')->change(); // Balik ke DATE kalau rollback
+            $table->date('month')->change();
         });
     }
 };

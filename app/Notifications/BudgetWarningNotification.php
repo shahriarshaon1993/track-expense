@@ -20,7 +20,7 @@ class BudgetWarningNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['database']; // Hanya simpan di database
+        return ['database'];
     }
 
     public function toDatabase($notifiable)

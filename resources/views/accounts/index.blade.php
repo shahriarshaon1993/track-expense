@@ -36,7 +36,7 @@
         <div id="accountModal"
             class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden px-4">
             <div
-                class="bg-white dark:bg-gray-900 rounded-lg p-6 sm:p-8 max-w-lg w-full shadow-lg relative 
+                class="bg-white dark:bg-gray-900 rounded-lg p-6 sm:p-8 max-w-lg w-full shadow-lg relative
                         sm:max-w-sm md:max-w-md lg:max-w-lg transition-all">
 
                 <!-- Illustration -->
@@ -52,7 +52,7 @@
 
                 <!-- Modal Content -->
                 <p class="mt-3 md:mt-5 text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
-                    With the <strong>Financial Accounts</strong> feature, you can <strong>add accounts manually</strong> 
+                    With the <strong>Financial Accounts</strong> feature, you can <strong>add accounts manually</strong>
                     such as bank accounts, digital wallets, or cash.
                 </p>
 
@@ -63,7 +63,7 @@
 
                 <!-- Highlight Info -->
                 <div
-                    class="mt-4 md:mt-6 p-3 md:p-4 bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 rounded-md 
+                    class="mt-4 md:mt-6 p-3 md:p-4 bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 rounded-md
                             text-sm md:text-base leading-relaxed">
                     For <strong>security and privacy</strong>, this app <strong>does not directly connect to bank accounts or digital wallets</strong>.
                     All balances are <strong>entered manually by users</strong> to give you full control over your financial records.
@@ -72,7 +72,7 @@
                 <!-- CTA -->
                 <div class="mt-6 md:mt-8 text-center">
                     <button onclick="closeAccountModal()"
-                        class="px-4 py-2 md:px-6 md:py-3 bg-indigo-500 hover:bg-indigo-600 text-white 
+                        class="px-4 py-2 md:px-6 md:py-3 bg-indigo-500 hover:bg-indigo-600 text-white
                             text-sm md:text-base font-medium rounded-md shadow-md transition-all">
                         Got It
                     </button>
@@ -113,7 +113,7 @@
                                         {{ $account->name }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 font-medium">
-                                        BDT {{ number_format($account->balance, 0, ',', '.') }}
+                                        BDT @money($account->balance)
                                     </td>
                                     <td class="px-6 py-4">
                                         <span

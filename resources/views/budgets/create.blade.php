@@ -65,8 +65,7 @@
                     <!-- Month -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Month</label>
-                        <input type="month" name="month" required
-                            class="w-full mt-1 p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <input type="month" name="month" required class="w-full mt-1 p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                     </div>
 
                     <!-- Save Button -->

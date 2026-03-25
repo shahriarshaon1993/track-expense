@@ -8,6 +8,8 @@ use App\Models\Transaction;
 use App\Models\BalanceLog;
 use App\Models\Budget;
 use App\Events\BudgetThresholdReached;
+use App\Notifications\BudgetWarningNotification;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -72,9 +74,11 @@ class TransactionController extends Controller
 
         // 🔹 CHECK AND UPDATE BUDGET IF TRANSACTION IS 'EXPENSE'
         if ($transaction->type === 'expense') {
+            $month = Carbon::parse($transaction->transaction_date)->format('Y-m');
+
             $budget = Budget::where('category_id', $transaction->category_id)
                 ->where('user_id', $user->id)
-                ->where('month', date('Y-m'))
+                ->where('month', $month)
                 ->first();
 
             if ($budget) {
@@ -85,7 +89,7 @@ class TransactionController extends Controller
 
                 // 🔹 Send warning if usage is between 80% - 99%
                 if ($percentUsed >= 80 && $percentUsed < 100) {
-                    $user->notify(new \App\Notifications\BudgetWarningNotification($budget));
+                    $user->notify(new BudgetWarningNotification($budget));
                 }
 
                 // 🔹 Send ThresholdReached notification if usage is 100% or more
@@ -115,9 +119,6 @@ class TransactionController extends Controller
 
         $user = Auth::user();
         $account = Account::where('id', $transaction->account_id)->where('user_id', Auth::id())->firstOrFail();
-
-        // 🔥 SAVE OLD AMOUNT BEFORE UPDATE
-        $oldAmount = $transaction->amount;
 
         $cleanAmount = str_replace('.', '', $validated['amount']);
         $formattedAmount = number_format((float) $cleanAmount, 2, '.', '');
@@ -153,21 +154,28 @@ class TransactionController extends Controller
 
         // 🔹 HANDLE BUDGETING (ONLY IF EXPENSE)
         if ($transaction->type === 'expense') {
+            $month = Carbon::parse($transaction->transaction_date)->format('Y-m');
+
             $budget = Budget::where('category_id', $transaction->category_id)
                 ->where('user_id', $user->id)
-                ->where('month', date('Y-m'))
+                ->where('month', $month)
                 ->first();
 
             if ($budget) {
                 // 🔥 Subtract old amount first, then add the new one
-                $budget->spent = max(0, $budget->spent - $oldAmount);
-                $budget->spent += $formattedAmount;
+                $spent = Transaction::where('category_id', $transaction->category_id)
+                    ->where('user_id', $user->id)
+                    ->where('type', 'expense')
+                    ->whereRaw("DATE_FORMAT(transaction_date,'%Y-%m') = ?", [$month])
+                    ->sum('amount');
+
+                $budget->spent = $spent;
                 $budget->save();
 
                 // Optional: Notifications
                 $percentUsed = ($budget->spent / $budget->amount) * 100;
                 if ($percentUsed >= 80 && $percentUsed < 100) {
-                    $user->notify(new \App\Notifications\BudgetWarningNotification($budget));
+                    $user->notify(new BudgetWarningNotification($budget));
                 }
                 if ($percentUsed >= 100) {
                     $user->notify(new \App\Notifications\BudgetThresholdReached($budget));
@@ -203,13 +211,24 @@ class TransactionController extends Controller
 
         // 🔹 Subtract spent from budget if transaction is 'expense'
         if ($transaction->type === 'expense') {
+            $month = Carbon::parse($transaction->transaction_date)->format('Y-m');
+
             $budget = Budget::where('user_id', Auth::id())
                 ->where('category_id', $transaction->category_id)
-                ->where('month', date('Y-m'))
+                ->where('month', $month)
                 ->first();
 
             if ($budget) {
-                $budget->decrement('spent', $transaction->amount);
+                // 🔹 Recalculate total spent dynamically
+                $spent = Transaction::where('category_id', $transaction->category_id)
+                    ->where('user_id', Auth::id())
+                    ->where('type', 'expense')
+                    ->whereRaw("DATE_FORMAT(transaction_date,'%Y-%m') = ?", [$month])
+                    ->where('id', '!=', $transaction->id) // exclude the deleting transaction
+                    ->sum('amount');
+
+                $budget->spent = $spent;
+                $budget->save();
             }
         }
 
@@ -217,7 +236,7 @@ class TransactionController extends Controller
         BalanceLog::create([
             'account_id' => $account->id,
             'amount' => $transaction->amount,
-            'type' => 'delete_' . $transaction->type, // Mark as from deleted transaction
+            'type' => 'delete_' . $transaction->type,
         ]);
 
         $transaction->delete();

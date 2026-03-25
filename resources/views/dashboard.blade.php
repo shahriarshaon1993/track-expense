@@ -266,12 +266,12 @@
                                             alt="Promo 1">
                                     </div>
                                     <div class="w-full flex-shrink-0">
-                                        <img src="https://via.placeholder.com/1200x400/FF5733"
+                                        <img src="https://i.imgur.com/G8wpE7p.jpeg"
                                             class="w-full h-32 sm:h-36 lg:h-48 object-cover rounded-lg"
                                             alt="Promo 2">
                                     </div>
                                     <div class="w-full flex-shrink-0">
-                                        <img src="https://via.placeholder.com/1200x400/33FF57"
+                                        <img src="https://i.imgur.com/PIKVTrY.jpeg"
                                             class="w-full h-32 sm:h-36 lg:h-48 object-cover rounded-lg"
                                             alt="Promo 3">
                                     </div>
@@ -413,8 +413,7 @@
                                         Average Daily Expense
                                     </h4>
                                     <div class="flex items-center justify-center h-40 sm:h-48 md:h-56">
-                                        <p id="avgDailyExpense"
-                                            class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-white"></p>
+                                        <p id="avgDailyExpense" class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-white"></p>
                                     </div>
                                 </div>
 

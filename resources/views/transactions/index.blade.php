@@ -36,20 +36,16 @@
         <div id="transactionModal"
             class="fixed z-[9999] inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden px-4">
             <div
-                class="bg-white dark:bg-gray-900 rounded-lg p-6 sm:p-8 max-w-lg w-full shadow-lg relative 
-                        sm:max-w-sm md:max-w-md lg:max-w-lg transition-all">
-                <!-- Ilustrasi -->
+                class="bg-white dark:bg-gray-900 rounded-lg p-6 sm:p-8 max-w-lg w-full shadow-lg relative sm:max-w-sm md:max-w-md lg:max-w-lg transition-all">
                 <div class="flex justify-center">
                     <img src="https://cdn-icons-png.flaticon.com/512/3081/3081559.png" alt="Transaction Illustration"
                         class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 transition-all">
                 </div>
 
-                <!-- Judul -->
                 <h3 class="text-xl md:text-2xl font-bold text-center text-gray-900 dark:text-gray-100 mt-4 md:mt-6">
                     Track Your Financial Transactions Easily 💰
                 </h3>
 
-                <!-- Isi Modal -->
                 <p class="mt-3 md:mt-5 text-gray-700 dark:text-gray-300 text-sm md:text-base leading-relaxed">
                     With the feature <strong>Transactions</strong>, you can record every income and expense.
                     All transactions are stored in the system and can be accessed anytime to help manage your finances better.
@@ -60,10 +56,8 @@
                     <strong>analyze spending patterns</strong>, make smarter financial decisions
                 </p>
 
-                <!-- Highlight Info -->
                 <div
-                    class="mt-4 md:mt-6 p-3 md:p-4 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-md 
-                            text-sm md:text-base leading-relaxed">
+                    class="mt-4 md:mt-6 p-3 md:p-4 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-md text-sm md:text-base leading-relaxed">
                     With this feature, you can <strong class="text-blue-700 dark:text-blue-300">track every expense</strong>
                     and keep your finances healthy and under control.
                 </div>
@@ -71,7 +65,7 @@
                 <!-- CTA -->
                 <div class="mt-6 md:mt-8 text-center">
                     <button onclick="closeTransactionModal()"
-                        class="px-4 py-2 md:px-6 md:py-3 bg-blue-500 hover:bg-blue-600 text-white 
+                        class="px-4 py-2 md:px-6 md:py-3 bg-blue-500 hover:bg-blue-600 text-white
                             text-sm md:text-base font-medium rounded-md shadow-md transition-all">
                         Got It
                     </button>
@@ -152,11 +146,11 @@
                                         {{ $transaction->description }}</td>
                                     <td
                                         class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300 font-medium {{ $transaction->type == 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
-                                        BDT {{ number_format($transaction->amount, 0, ',', '.') }}
+                                        BDT @money($transaction->amount)
                                     </td>
                                     <td class="px-6 py-4">
                                         <span
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                             {{ $transaction->type == 'income' ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400' }}">
                                             {{ $transaction->type == 'income' ? 'Pemasukan' : 'Pengeluaran' }}
                                         </span>
@@ -196,7 +190,7 @@
                             <div class="flex justify-between mb-3">
                                 <!-- Transaction Type Badge - Positioned for immediate recognition -->
                                 <span
-                                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium 
+                                    class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
                                     {{ $transaction->type == 'income' ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400' }}">
                                     {{ $transaction->type == 'income' ? 'Pemasukan' : 'Pengeluaran' }}
                                 </span>
