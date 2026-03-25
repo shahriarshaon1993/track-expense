@@ -26,8 +26,8 @@ class BudgetWarningNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => '⚠️ Budget Hampir Habis!',
-            'message' => "Kategori {$this->budget->category->name} hampir melewati batas.",
+            'title' => '⚠️ Budget is almost exhausted!',
+            'message' => "The category {$this->budget->category->name} is almost exceeding its limit.",
             'url' => url('/budgets'),
         ];
     }

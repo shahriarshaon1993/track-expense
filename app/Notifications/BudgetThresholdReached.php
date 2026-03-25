@@ -26,7 +26,7 @@ class BudgetThresholdReached extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'message' => "Anggaran kategori {$this->budget->category->name} telah melewati batas!",
+            'message' => "The budget for the category {$this->budget->category->name} has exceeded its limit!",
             'budget_id' => $this->budget->id,
         ];
     }
