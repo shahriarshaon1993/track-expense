@@ -66,8 +66,8 @@
                                     <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">
                                         Total Income
                                     </p>
-                                    <p class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white">
-                                        BDT <span id="totalIncome">@money($totalIncome)</span>
+                                    <p class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white hidden-amount">
+                                        BDT <span class="amount" id="totalIncome">@money($totalIncome)</span>
                                     </p>
                                 </div>
                             </div>
@@ -112,8 +112,8 @@
                                     <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">
                                         Total Expense
                                     </p>
-                                    <p class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white">
-                                        BDT <span id="totalExpense">@money($totalExpense)</span>
+                                    <p class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white hidden-amount">
+                                        BDT <span class="amount" id="totalExpense">@money($totalExpense)</span>
                                     </p>
                                 </div>
                             </div>
@@ -887,14 +887,12 @@
             const eyeOpen = document.getElementById("eyeOpen");
             const eyeSlash = document.getElementById("eyeSlash");
 
-            // Simpan angka asli ke dalam data attribute (hanya jika belum ada)
             amounts.forEach(amount => {
                 if (!amount.dataset.original) {
-                    amount.dataset.original = amount.textContent.trim(); // Simpan angka asli
+                    amount.dataset.original = amount.textContent.trim();
                 }
             });
 
-            // Cek status dari LocalStorage
             let isHidden = localStorage.getItem("hideAmount") === "true";
             updateVisibility();
 
