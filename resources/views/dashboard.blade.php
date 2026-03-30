@@ -286,7 +286,7 @@
                                         <p
                                             class="text-base lg:text-lg font-bold text-gray-700 dark:text-gray-300 hidden-amount">
                                             BDT <span
-                                                class="amount">@money($account->balance)</span>
+                                                class="amount">{{ number_format($account->balance) }}</span>
                                         </p>
                                     </div>
                                     <!-- Account Type Badge -->
