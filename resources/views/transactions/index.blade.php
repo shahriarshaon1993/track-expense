@@ -149,10 +149,9 @@
                                         BDT @money($transaction->amount)
                                     </td>
                                     <td class="px-6 py-4">
-                                        <span
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                             {{ $transaction->type == 'income' ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400' }}">
-                                            {{ $transaction->type == 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+                                            {{ $transaction->type == 'income' ? 'Income' : 'Expanse' }}
                                         </span>
                                     </td>
                                     <!-- Fixed: Center-aligned actions with even spacing -->

@@ -3,13 +3,13 @@
         <div class="flex justify-between items-center">
             <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Dashboard</h2>
             <button id="toggleVisibility"
-                class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">
+                    class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600">
                 <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-800 dark:text-white"
-                    viewBox="0 0 20 20" fill="currentColor">
+                     viewBox="0 0 20 20" fill="currentColor">
                     <path id="eyeOpen"
-                        d="M10 3C5 3 1 8 1 10s4 7 9 7 9-5 9-7-4-7-9-7zm0 12a5 5 0 110-10 5 5 0 010 10z" />
+                          d="M10 3C5 3 1 8 1 10s4 7 9 7 9-5 9-7-4-7-9-7zm0 12a5 5 0 110-10 5 5 0 010 10z"/>
                     <path id="eyeSlash" class="hidden"
-                        d="M2.454 2.454a1 1 0 00-1.415 1.414l14.142 14.142a1 1 0 001.414-1.414L2.454 2.454zM10 14c-2.5 0-4.5-2-4.5-4.5S7.5 5 10 5s4.5 2 4.5 4.5S12.5 14 10 14z" />
+                          d="M2.454 2.454a1 1 0 00-1.415 1.414l14.142 14.142a1 1 0 001.414-1.414L2.454 2.454zM10 14c-2.5 0-4.5-2-4.5-4.5S7.5 5 10 5s4.5 2 4.5 4.5S12.5 14 10 14z"/>
                 </svg>
             </button>
         </div>
@@ -33,82 +33,132 @@
                 </div>
             </div>
 
+            <div class="flex justify-end mb-4">
+                <select id="monthFilter" class="text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body">
+                    <option value="">All Time</option>
+                    @foreach($months as $month)
+                        <option value="{{ $month }}">
+                            {{ \Carbon\Carbon::parse($month . '-01')->format('F Y') }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
                 <!-- Income Card - Compact design for mobile -->
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md transform hover:translate-y-px">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
                     <div class="p-4 md:p-6">
-                        <div class="flex items-center">
-                            <div class="p-2 mr-3 rounded-full bg-green-100 dark:bg-green-900/40">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-5 w-5 md:h-6 md:w-6 text-green-500 dark:text-green-300" viewBox="0 0 20 20"
-                                    fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"
-                                        clip-rule="evenodd" />
-                                </svg>
+
+                        <!-- Top Section -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="p-2 mr-3 rounded-full bg-green-100 dark:bg-green-900/40">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="h-5 w-5 md:h-6 md:w-6 text-green-500 dark:text-green-300"
+                                         viewBox="0 0 20 20"
+                                         fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                              d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"
+                                              clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                        Total Income
+                                    </p>
+                                    <p class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white">
+                                        BDT <span id="totalIncome">@money($totalIncome)</span>
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Total Income</p>
-                                <p class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white hidden-amount">BDT
-                                    <span class="amount">@money($totalIncome)</span>
-                                </p>
+
+                            <!-- Growth Badge -->
+                            <div id="incomeGrowth">
+                                @if($incomeGrowth >= 0)
+                                    <span class="flex items-center text-xs font-semibold text-green-600 bg-green-100 dark:bg-green-900/40 px-2 py-1 rounded-full">
+                                        ▲ {{ $incomeGrowth }}%
+                                    </span>
+                                @else
+                                    <span class="flex items-center text-xs font-semibold text-red-600 bg-red-100 dark:bg-red-900/40 px-2 py-1 rounded-full">
+                                        ▼ {{ abs($incomeGrowth) }}%
+                                    </span>
+                                @endif
                             </div>
                         </div>
-                        <div class="mt-3 h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+
+                        <!-- Progress Bar -->
+                        <div class="mt-4 h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                             <div class="h-full bg-green-500 rounded-full" style="width: 75%"></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Expense Card - Compact design for mobile -->
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md transform hover:translate-y-px">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
                     <div class="p-4 md:p-6">
-                        <div class="flex items-center">
-                            <div class="p-2 mr-3 rounded-full bg-red-100 dark:bg-red-900/40">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-5 w-5 md:h-6 md:w-6 text-red-500 dark:text-red-300" viewBox="0 0 20 20"
-                                    fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"
-                                        clip-rule="evenodd" />
-                                </svg>
+                        <!-- Top Section -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="p-2 mr-3 rounded-full bg-green-100 dark:bg-green-900/40">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="h-5 w-5 md:h-6 md:w-6 text-red-500 dark:text-red-300" viewBox="0 0 20 20"
+                                         fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                              d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"
+                                              clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                                        Total Expense
+                                    </p>
+                                    <p class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white">
+                                        BDT <span id="totalExpense">@money($totalExpense)</span>
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Total Expense</p>
-                                <p class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white hidden-amount">
-                                    BDT <span class="amount">@money($totalExpense)</span>
-                                </p>
+
+                            <!-- Growth Badge -->
+                            <div id="expenseGrowth">
+                                @if($expenseGrowth <= 0)
+                                    <span class="flex items-center text-xs font-semibold text-green-600 bg-green-100 dark:bg-green-900/40 px-2 py-1 rounded-full">
+                                        ▼ {{ abs($expenseGrowth) }}%
+                                    </span>
+                                @else
+                                    <span class="flex items-center text-xs font-semibold text-red-600 bg-red-100 dark:bg-red-900/40 px-2 py-1 rounded-full">
+                                        ▲ {{ $expenseGrowth }}%
+                                    </span>
+                                @endif
                             </div>
                         </div>
-                        <div class="mt-3 h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
-                            <div class="h-full bg-red-500 rounded-full" style="width: 60%"></div>
+
+                        <!-- Progress Bar -->
+                        <div class="mt-4 h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-green-500 rounded-full" style="width: 75%"></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Balance Card - Compact design for mobile -->
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md transform hover:translate-y-px">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md transform hover:translate-y-px">
                     <div class="p-4 md:p-6">
                         <div class="flex items-center">
                             <div class="p-2 mr-3 rounded-full bg-blue-100 dark:bg-blue-900/40">
                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-5 w-5 md:h-6 md:w-6 text-blue-500 dark:text-blue-300" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
+                                     class="h-5 w-5 md:h-6 md:w-6 text-blue-500 dark:text-blue-300" fill="none"
+                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                 </svg>
                             </div>
                             <div>
                                 <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Total Balance</p>
                                 <p class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white hidden-amount">BDT
-                                    <span class="amount">@money($totalBalance)</span>
+                                    <span class="amount" id="totalBalance">@money($totalBalance)</span>
                                 </p>
                             </div>
                         </div>
-                        <div class="mt-3 h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <div class="mt-4 h-1 w-full bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
                             <div class="h-full bg-blue-500 rounded-full" style="width: 85%"></div>
                         </div>
                     </div>
@@ -117,10 +167,23 @@
 
             <!-- Quick Stat Comparison (Responsive) -->
             <div class="mt-4 grid grid-cols-3 gap-2 md:gap-6">
-                <div class="bg-white/80 dark:bg-gray-800/50 rounded-lg p-2 text-center">
-                    <p class="text-xs text-gray-500 dark:text-gray-400">Income/Expense</p>
-                    <p class="text-sm font-bold text-green-500 dark:text-green-400">Coming Soon</p>
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md transform hover:translate-y-px">
+                    <div class="p-4 md:p-6">
+                        <div class="flex items-center">
+                            <div class="p-1 mr-1 rounded-full bg-blue-100 dark:bg-blue-900/40">
+                                <p class="text-xl md:text-2.5xl" id="savingRateEmoji"></p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 font-medium">Saving Rate</p>
+                                <p class="text-lg md:text-2xl font-bold text-gray-900 dark:text-white hidden-amount">BDT
+                                    <span class="amount" id="savingRate">{{$savingRate}} %</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+
                 <div class="bg-white/80 dark:bg-gray-800/50 rounded-lg p-2 text-center">
                     <p class="text-xs text-gray-500 dark:text-gray-400">Monthly Growth</p>
                     <p class="text-sm font-bold text-blue-500 dark:text-blue-400">Coming Soon</p>
@@ -136,41 +199,41 @@
             <div class="mb-6 mt-6 md:mt-10 lg:hidden">
                 <div class="flex overflow-x-auto justify-center pb-2 px-4 space-x-3 md:space-x-8 scrollbar-hide">
                     <a href="{{ route('transactions.create') }}"
-                        class="flex-shrink-0 flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl p-3 w-20 h-20">
+                       class="flex-shrink-0 flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl p-3 w-20 h-20">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
+                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
                         <span class="text-xs text-center font-medium">Add Transaction</span>
                     </a>
 
                     <a href="{{ route('transactions.index') }}"
-                        class="flex-shrink-0 flex flex-col items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl p-3 w-20 h-20">
+                       class="flex-shrink-0 flex flex-col items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl p-3 w-20 h-20">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
+                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
                         </svg>
                         <span class="text-xs text-center font-medium">Manage Transactions</span>
                     </a>
 
                     <a href="{{ route('accounts.index') }}"
-                        class="flex-shrink-0 flex flex-col items-center justify-center bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl p-3 w-20 h-20">
+                       class="flex-shrink-0 flex flex-col items-center justify-center bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-xl p-3 w-20 h-20">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
+                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                                  d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/>
                         </svg>
                         <span class="text-xs text-center font-medium">Financial Accounts</span>
                     </a>
 
                     <a href="{{ route('budgets.index') }}"
-                        class="flex-shrink-0 flex flex-col items-center justify-center bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white rounded-xl p-3 w-20 h-20">
+                       class="flex-shrink-0 flex flex-col items-center justify-center bg-gradient-to-r from-purple-500 to-fuchsia-600 text-white rounded-xl p-3 w-20 h-20">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
+                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                  d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                         </svg>
                         <span class="text-xs font-medium">Budgeting</span>
                     </a>
@@ -197,33 +260,33 @@
                                                 <div
                                                     class="w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center bg-blue-100 dark:bg-blue-900 rounded-full">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-5 w-5 lg:h-6 lg:w-6 text-blue-600 dark:text-blue-300"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                         class="h-5 w-5 lg:h-6 lg:w-6 text-blue-600 dark:text-blue-300"
+                                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                              stroke-width="2"
+                                                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                                                     </svg>
                                                 </div>
                                             @elseif($account->type == 'e-wallet')
                                                 <div
                                                     class="w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center bg-purple-100 dark:bg-purple-900 rounded-full">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-5 w-5 lg:h-6 lg:w-6 text-purple-600 dark:text-purple-300"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                         class="h-5 w-5 lg:h-6 lg:w-6 text-purple-600 dark:text-purple-300"
+                                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                              stroke-width="2"
+                                                              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
                                                     </svg>
                                                 </div>
                                             @else
                                                 <div
                                                     class="w-8 h-8 lg:w-10 lg:h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-600 rounded-full">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
-                                                        class="h-5 w-5 lg:h-6 lg:w-6 text-gray-600 dark:text-gray-300"
-                                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                         class="h-5 w-5 lg:h-6 lg:w-6 text-gray-600 dark:text-gray-300"
+                                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                              stroke-width="2"
+                                                              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                     </svg>
                                                 </div>
                                             @endif
@@ -262,35 +325,35 @@
                                 <div id="slider" class="flex transition-transform duration-500 ease-in-out">
                                     <div class="w-full flex-shrink-0">
                                         <img src="https://i.imgur.com/LMKCLaH.jpeg"
-                                            class="w-full h-32 sm:h-36 lg:h-48 object-cover rounded-lg"
-                                            alt="Promo 1">
+                                             class="w-full h-32 sm:h-36 lg:h-48 object-cover rounded-lg"
+                                             alt="Promo 1">
                                     </div>
                                     <div class="w-full flex-shrink-0">
                                         <img src="https://i.imgur.com/G8wpE7p.jpeg"
-                                            class="w-full h-32 sm:h-36 lg:h-48 object-cover rounded-lg"
-                                            alt="Promo 2">
+                                             class="w-full h-32 sm:h-36 lg:h-48 object-cover rounded-lg"
+                                             alt="Promo 2">
                                     </div>
                                     <div class="w-full flex-shrink-0">
                                         <img src="https://i.imgur.com/PIKVTrY.jpeg"
-                                            class="w-full h-32 sm:h-36 lg:h-48 object-cover rounded-lg"
-                                            alt="Promo 3">
+                                             class="w-full h-32 sm:h-36 lg:h-48 object-cover rounded-lg"
+                                             alt="Promo 3">
                                     </div>
                                 </div>
                                 <!-- Slider Navigation -->
                                 <button id="prev"
-                                    class="absolute top-1/2 left-1 -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-800 dark:text-white p-2 sm:p-2.5 lg:p-3 rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-800 transition-colors">
+                                        class="absolute top-1/2 left-1 -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-800 dark:text-white p-2 sm:p-2.5 lg:p-3 rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-800 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 lg:h-5 lg:w-5"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 19l-7-7 7-7" />
+                                              d="M15 19l-7-7 7-7"/>
                                     </svg>
                                 </button>
                                 <button id="next"
-                                    class="absolute top-1/2 right-1 -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-800 dark:text-white p-2 sm:p-2.5 lg:p-3 rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-800 transition-colors">
+                                        class="absolute top-1/2 right-1 -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-800 dark:text-white p-2 sm:p-2.5 lg:p-3 rounded-full shadow-lg hover:bg-white dark:hover:bg-gray-800 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 lg:h-5 lg:w-5"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5l7 7-7 7" />
+                                              d="M9 5l7 7-7 7"/>
                                     </svg>
                                 </button>
                                 <!-- Slider Indicators -->
@@ -313,13 +376,13 @@
                                 <h3 class="text-lg sm:text-xl lg:text-xl font-semibold text-gray-800 dark:text-white">
                                     Recent Transactions</h3>
                                 <a href="{{ route('transactions.index') }}"
-                                    class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-xs sm:text-sm lg:text-sm font-medium flex items-center group">
+                                   class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-xs sm:text-sm lg:text-sm font-medium flex items-center group">
                                     View More
                                     <svg xmlns="http://www.w3.org/2000/svg"
-                                        class="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                         class="h-3.5 w-3.5 sm:h-4 sm:w-4 ml-1 transition-transform duration-300 group-hover:translate-x-1"
+                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5l7 7-7 7" />
+                                              d="M9 5l7 7-7 7"/>
                                     </svg>
                                 </a>
                             </div>
@@ -451,183 +514,272 @@
     <script src="https://unpkg.com/tippy.js@6"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", async function() {
+        document.addEventListener("DOMContentLoaded", function () {
+            loadDashboard();
+
+            document.getElementById("monthFilter")
+                .addEventListener("change", function () {
+
+                    loadDashboard(this.value);
+
+                });
+        });
+
+        async function loadDashboard(month = '') {
             try {
-                const response = await fetch("/dashboard-data");
+                const response = await fetch(`/dashboard-data?month=${month}`);
                 const data = await response.json();
 
-                // 🔹 Update Average Daily Expense
-                document.getElementById("avgDailyExpense").innerText =
-                    `BDT ${data.dailyExpenseAvg.toLocaleString()}`;
-
-                // 🔹 Chart Income vs Expense (Doughnut Chart)
-                new Chart(document.getElementById("incomeExpenseChart").getContext("2d"), {
-                    type: "doughnut",
-                    data: {
-                        labels: ["Income", "Expense"],
-                        datasets: [{
-                            data: [data.income, data.expense],
-                            backgroundColor: ["rgba(52, 211, 153, 0.8)",
-                                "rgba(248, 113, 113, 0.8)"
-                            ],
-                            borderColor: ["rgb(16, 185, 129)", "rgb(239, 68, 68)"],
-                            borderWidth: 1,
-                            borderRadius: 4,
-                            hoverOffset: 6
-                        }]
-                    },
-                    options: {
-                        cutout: "65%",
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: "bottom"
-                            },
-                            tooltip: {
-                                backgroundColor: "rgba(17, 24, 39, 0.8)",
-                                callbacks: {
-                                    label: (tooltipItem) => `BDT ${tooltipItem.raw.toLocaleString()}`
-                                }
-                            }
-                        }
-                    }
-                });
-
-                // 🔹 Chart Monthly Balance (Line Chart)
-                const balanceHistoryCtx = document.getElementById("balanceHistoryChart").getContext("2d");
-                const gradient = balanceHistoryCtx.createLinearGradient(0, 0, 0, 400);
-                gradient.addColorStop(0, "rgba(59, 130, 246, 0.5)");
-                gradient.addColorStop(1, "rgba(59, 130, 246, 0.0)");
-
-                new Chart(balanceHistoryCtx, {
-                    type: "line",
-                    data: {
-                        labels: data.balanceHistory.map(item => item.date),
-                        datasets: [{
-                            label: "Balance",
-                            data: data.balanceHistory.map(item => item.balance),
-                            borderColor: "rgb(59, 130, 246)",
-                            backgroundColor: gradient,
-                            fill: true,
-                            tension: 0.3
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: "bottom"
-                            }
-                        }
-                    }
-                });
-
-                // 🔹 Chart Budget Usage by Category (Bar Chart)
-                new Chart(document.getElementById("budgetUsageChart"), {
-                    type: "bar",
-                    data: {
-                        labels: data.budgetUsage.map(b => b.category),
-                        datasets: [{
-                                label: "Budget",
-                                data: data.budgetUsage.map(b => b.budget),
-                                backgroundColor: "rgba(54, 162, 235, 0.6)"
-                            },
-                            {
-                                label: "Spent",
-                                data: data.budgetUsage.map(b => b.spent),
-                                backgroundColor: "rgba(255, 99, 132, 0.6)"
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: "bottom"
-                            }
-                        }
-                    }
-                });
-
-                // 🔹 Remaining Budget Chart (Doughnut Chart)
-                new Chart(document.getElementById("remainingBudgetChart"), {
-                    type: "doughnut",
-                    data: {
-                        labels: ["Spent", "Remaining"],
-                        datasets: [{
-                            data: [data.totalSpent, data.remainingBudget],
-                            backgroundColor: ["#FF6384", "#36A2EB"]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: "bottom"
-                            }
-                        }
-                    }
-                });
-
-                // 🔹 Predicted End-of-Month Balance Chart (Line Chart)
-                new Chart(document.getElementById("predictedBalanceChart"), {
-                    type: "line",
-                    data: {
-                        labels: ["Hari Ini", "Minggu Depan", "Akhir Bulan"],
-                        datasets: [{
-                            label: "Predicted Balance",
-                            data: [data.totalBudget, data.remainingBudget, data
-                                .predictedBalance],
-                            borderColor: "#4CAF50",
-                            fill: false
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: "bottom"
-                            }
-                        }
-                    }
-                });
-
-                // 🔹 Top Spending Categories Chart (Pie Chart)
-                new Chart(document.getElementById("topSpendingCategoriesChart"), {
-                    type: "pie",
-                    data: {
-                        labels: data.topCategories.map(c => c.name),
-                        datasets: [{
-                            data: data.topCategories.map(c => c.total_spent),
-                            backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
-                                "#9966FF"
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: "bottom"
-                            }
-                        }
-                    }
-                });
+                updateStats(data, month);
+                renderCharts(data);
 
             } catch (error) {
                 console.error("Failed to fetch dashboard data:", error);
             }
-        });
+        }
 
+        function updateStats(data, month = '') {
+            // 🔹 Update Average Daily Expense
+            const totalIncome = document.getElementById("totalIncome");
+            const totalExpense = document.getElementById("totalExpense");
+            const avgDailyExpense = document.getElementById("avgDailyExpense");
 
-        // Tippy.js for tooltips with improved animation
-        document.addEventListener('DOMContentLoaded', function() {
+            displaySavingRate(data.savingRate)
+
+            avgDailyExpense.innerText = `BDT ${data.dailyExpenseAvg.toLocaleString()}`;
+
+            totalIncome.innerText = data.totalIncome;
+            totalExpense.innerText = data.totalExpense;
+
+            // 🔥 Growth update
+            if(month) {
+                const incomeGrowth = document.getElementById("incomeGrowth");
+                const expenseGrowth = document.getElementById("expenseGrowth");
+
+                incomeGrowth.innerHTML = renderGrowthBadge(data.incomeGrowth, 'income');
+                expenseGrowth.innerHTML = renderGrowthBadge(data.expenseGrowth, 'expense');
+            }
+        }
+
+        function displaySavingRate(rate) {
+            const savingRate = document.getElementById("savingRate");
+            const savingRateEmoji = document.getElementById("savingRateEmoji");
+
+            // 🔹 Set saving rate with emoji
+            let emoji = '😐'; // default zero
+            if (rate > 0) {
+                emoji = '🤑'; // positive
+            } else if (rate < 0) {
+                emoji = '😭'; // negative
+            }
+
+            savingRateEmoji.innerText = emoji;
+            savingRate.innerText = `${rate} %`;
+
+            if(rate > 0) savingRateEmoji.style.color = 'green';
+            else if(rate < 0) savingRateEmoji.style.color = 'red';
+            else savingRateEmoji.style.color = 'gray';
+        }
+
+        function renderGrowthBadge(value, type = 'income') {
+            let isPositive = value >= 0;
+
+            // 🔹 Expense হলে logic reverse
+            if (type === 'expense') {
+                isPositive = value <= 0;
+            }
+
+            const colorClass = isPositive
+                ? "text-green-600 bg-green-100 dark:bg-green-900/40"
+                : "text-red-600 bg-red-100 dark:bg-red-900/40";
+
+            const arrow = isPositive ? "▼" : "▲";
+
+            return `
+                <span class="flex items-center text-xs font-semibold ${colorClass} px-2 py-1 rounded-full">
+                    ${arrow} ${Math.abs(value)}%
+                </span>
+            `;
+        }
+
+        function renderCharts(data) {
+            destroyChart("incomeExpenseChart");
+            destroyChart("balanceHistoryChart");
+            destroyChart("budgetUsageChart");
+            destroyChart("remainingBudgetChart");
+            destroyChart("predictedBalanceChart");
+            destroyChart("topSpendingCategoriesChart");
+
+            // 🔹 Chart Income vs. Expense (Doughnut Chart)
+            new Chart(document.getElementById("incomeExpenseChart").getContext("2d"), {
+                type: "doughnut",
+                data: {
+                    labels: ["Income", "Expense"],
+                    datasets: [{
+                        data: [data.income, data.expense],
+                        backgroundColor: ["rgba(52, 211, 153, 0.8)",
+                            "rgba(248, 113, 113, 0.8)"
+                        ],
+                        borderColor: ["rgb(16, 185, 129)", "rgb(239, 68, 68)"],
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    cutout: "65%",
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: "bottom"
+                        },
+                        tooltip: {
+                            backgroundColor: "rgba(17, 24, 39, 0.8)",
+                            callbacks: {
+                                label: (tooltipItem) => `BDT ${tooltipItem.raw.toLocaleString()}`
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 🔹 Chart Monthly Balance (Line Chart)
+            const balanceHistoryCtx = document.getElementById("balanceHistoryChart").getContext("2d");
+            const gradient = balanceHistoryCtx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, "rgba(59, 130, 246, 0.5)");
+            gradient.addColorStop(1, "rgba(59, 130, 246, 0.0)");
+
+            new Chart(balanceHistoryCtx, {
+                type: "line",
+                data: {
+                    labels: data.balanceHistory.map(item => item.date),
+                    datasets: [{
+                        label: "Balance",
+                        data: data.balanceHistory.map(item => item.balance),
+                        borderColor: "rgb(59, 130, 246)",
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: "bottom"
+                        }
+                    }
+                }
+            });
+
+            // 🔹 Chart Budget Usage by Category (Bar Chart)
+            new Chart(document.getElementById("budgetUsageChart"), {
+                type: "bar",
+                data: {
+                    labels: data.budgetUsage.map(b => b.category),
+                    datasets: [{
+                        label: "Budget",
+                        data: data.budgetUsage.map(b => b.budget),
+                        backgroundColor: "rgba(54, 162, 235, 0.6)"
+                    },
+                        {
+                            label: "Spent",
+                            data: data.budgetUsage.map(b => b.spent),
+                            backgroundColor: "rgba(255, 99, 132, 0.6)"
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: "bottom"
+                        }
+                    }
+                }
+            });
+
+            // 🔹 Remaining Budget Chart (Doughnut Chart)
+            new Chart(document.getElementById("remainingBudgetChart"), {
+                type: "doughnut",
+                data: {
+                    labels: ["Spent", "Remaining"],
+                    datasets: [{
+                        data: [data.totalSpent, data.remainingBudget],
+                        backgroundColor: ["#FF6384", "#36A2EB"]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: "bottom"
+                        }
+                    }
+                }
+            });
+
+            // 🔹 Predicted End-of-Month Balance Chart (Line Chart)
+            new Chart(document.getElementById("predictedBalanceChart"), {
+                type: "line",
+                data: {
+                    labels: ["Today", "Next Week", "End of Month"],
+                    datasets: [{
+                        label: "Predicted Balance",
+                        data: [data.totalBudget, data.remainingBudget, data
+                            .predictedBalance],
+                        borderColor: "#4CAF50",
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: "bottom"
+                        }
+                    }
+                }
+            });
+
+            // 🔹 Top Spending Categories Chart (Pie Chart)
+            new Chart(document.getElementById("topSpendingCategoriesChart"), {
+                type: "pie",
+                data: {
+                    labels: data.topCategories.map(c => c.name),
+                    datasets: [{
+                        data: data.topCategories.map(c => c.total_spent),
+                        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
+                            "#9966FF"
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: "bottom"
+                        }
+                    }
+                }
+            });
+        }
+
+        function destroyChart(canvasId) {
+            const chart = Chart.getChart(canvasId);
+            if (chart) {
+                chart.destroy();
+            }
+        }
+
+        // Dippy.js for tooltips with improved animation
+        document.addEventListener('DOMContentLoaded', function () {
             tippy('#infoSaldo', {
                 content: "Total Balance = Sum of all financial account balances",
                 placement: 'top',
@@ -729,7 +881,7 @@
 
         startAutoSlide();
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const toggleButton = document.getElementById("toggleVisibility");
             const amounts = document.querySelectorAll(".hidden-amount .amount");
             const eyeOpen = document.getElementById("eyeOpen");
@@ -746,7 +898,7 @@
             let isHidden = localStorage.getItem("hideAmount") === "true";
             updateVisibility();
 
-            toggleButton.addEventListener("click", function() {
+            toggleButton.addEventListener("click", function () {
                 isHidden = !isHidden;
                 localStorage.setItem("hideAmount", isHidden);
                 updateVisibility();
