@@ -36,23 +36,23 @@
 </style>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-        @include('layouts.navigation')
+<div x-data="{ open: false }" class="flex h-screen bg-gray-100 dark:bg-gray-900">
+    <!-- Sidebar -->
+    @include('layouts.sidebar')
 
-        <!-- Page Heading -->
-        @isset($header)
-            <header class="bg-white dark:bg-gray-800 shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @endisset
+    <!-- ================= Main Content ================= -->
+    <div class="flex flex-col flex-1 w-full">
 
-        <!-- Page Content -->
-        <main>
+        <!-- Topbar -->
+        @include('layouts.header')
+
+
+        <!-- ================= Content ================= -->
+        <main class="flex-1 p-6 overflow-y-auto">
             {{ $slot }}
         </main>
     </div>
+</div>
 </body>
 
 </html>

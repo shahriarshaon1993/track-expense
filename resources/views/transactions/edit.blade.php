@@ -3,159 +3,157 @@
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Edit Transaction</h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
 
-                <!-- Back Button -->
-                <div class="mb-6">
-                    <a href="{{ route('transactions.index') }}"
-                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-lg border border-blue-300">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5"></path>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 5l-7 7 7 7"></path>
-                        </svg>
-                        Back to Transactions
-                    </a>
-                </div>
+            <!-- Back Button -->
+            <div class="mb-6">
+                <a href="{{ route('transactions.index') }}"
+                   class="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-lg border border-blue-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 5l-7 7 7 7"></path>
+                    </svg>
+                    Back to Transactions
+                </a>
+            </div>
 
-                <!-- Replace header image with gradient background (Copperplate font) -->
-                <div class="mb-6 bg-cover bg-center rounded-lg h-36 flex items-center justify-center"
-                    style="background-image: url('https://i.gifer.com/76YS.gif');">
-                </div>
+            <!-- Replace header image with gradient background (Copperplate font) -->
+            <div class="mb-6 bg-cover bg-center rounded-lg h-36 flex items-center justify-center"
+                 style="background-image: url('https://i.gifer.com/76YS.gif');">
+            </div>
 
-                <form action="{{ route('transactions.update', $transaction->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
+            <form action="{{ route('transactions.update', $transaction->id) }}" method="POST">
+                @csrf
+                @method('PUT')
 
-                    <div class="space-y-6">
-                        <div>
-                            <label for="transaction_date"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-200">Transaction Date</label>
-                            <input type="date" id="transaction_date" name="transaction_date"
-                                value="{{ old('transaction_date', \Carbon\Carbon::parse($transaction->transaction_date)->toDateString()) }}"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-blue-500"
-                                required>
-                            @error('transaction_date')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
+                <div class="space-y-6">
+                    <div>
+                        <label for="transaction_date"
+                               class="block text-sm font-medium text-gray-700 dark:text-gray-200">Transaction Date</label>
+                        <input type="date" id="transaction_date" name="transaction_date"
+                               value="{{ old('transaction_date', \Carbon\Carbon::parse($transaction->transaction_date)->toDateString()) }}"
+                               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:border-blue-500"
+                               required>
+                        @error('transaction_date')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                        <div>
-                            <label for="description"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-200">Description</label>
-                            <textarea id="description" name="description" rows="3"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
-                                required>{{ old('description', $transaction->description) }}</textarea>
-                            @error('description')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
+                    <div>
+                        <label for="description"
+                               class="block text-sm font-medium text-gray-700 dark:text-gray-200">Description</label>
+                        <textarea id="description" name="description" rows="3"
+                                  class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200"
+                                  required>{{ old('description', $transaction->description) }}</textarea>
+                        @error('description')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
 
 
-                        <div>
-                            <label for="amount"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-200">Amount</label>
-                            <input type="text" name="amount" id="amount"
-                                value="{{ old('amount', number_format($transaction->amount, 0, ',', '.')) }}"
-                                class="mt-1 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                required>
-                            @error('amount')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
+                    <div>
+                        <label for="amount"
+                               class="block text-sm font-medium text-gray-700 dark:text-gray-200">Amount</label>
+                        <input type="text" name="amount" id="amount"
+                               value="{{ old('amount', number_format($transaction->amount, 0, ',', '.')) }}"
+                               class="mt-1 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                               required>
+                        @error('amount')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                        <div>
-                            <label for="type"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-200">Transaction Type</label>
-                            <select id="type" name="type"
+                    <div>
+                        <label for="type"
+                               class="block text-sm font-medium text-gray-700 dark:text-gray-200">Transaction Type</label>
+                        <select id="type" name="type"
                                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:border-blue-500"
                                 required>
-                                <option value="income"
-                                    {{ old('type', $transaction->type) === 'income' ? 'selected' : '' }}>Income
-                                </option>
-                                <option value="expense"
-                                    {{ old('type', $transaction->type) === 'expense' ? 'selected' : '' }}>Expense
-                                </option>
-                            </select>
-                            @error('type')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
+                            <option value="income"
+                                {{ old('type', $transaction->type) === 'income' ? 'selected' : '' }}>Income
+                            </option>
+                            <option value="expense"
+                                {{ old('type', $transaction->type) === 'expense' ? 'selected' : '' }}>Expense
+                            </option>
+                        </select>
+                        @error('type')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                        <!-- Category -->
-                        <div>
-                            <label for="category_id"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-200">Category</label>
-                            <select id="category_id" name="category_id"
+                    <!-- Category -->
+                    <div>
+                        <label for="category_id"
+                               class="block text-sm font-medium text-gray-700 dark:text-gray-200">Category</label>
+                        <select id="category_id" name="category_id"
                                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:ring-blue-500 focus:border-blue-500"
                                 required>
-                                @if ($categories->isEmpty())
-                                    <option value="" disabled selected>👀 Hmm... no categories yet!</option>
-                                @else
-                                    <option value="" disabled>🔍 Select a transaction category...</option>
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}"
-                                            {{ old('category_id', $transaction->category_id) == $category->id ? 'selected' : '' }}>
-                                            {{ $category->name }}
-                                        </option>
-                                    @endforeach
-                                @endif
-                            </select>
-                            @error('category_id')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                            @if ($categories->isEmpty())
+                                <option value="" disabled selected>👀 Hmm... no categories yet!</option>
+                            @else
+                                <option value="" disabled>🔍 Select a transaction category...</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}"
+                                        {{ old('category_id', $transaction->category_id) == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </select>
+                        @error('category_id')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
 
-                            <div class="mt-2">
-                                <button type="button" id="manageCategories"
+                        <div class="mt-2">
+                            <button type="button" id="manageCategories"
                                     class="text-blue-600 text-sm dark:text-blue-400 font-medium hover:underline">
-                                    Manage or Add Category
-                                </button>
-                            </div>
-                        </div>
-
-
-                        <div>
-                            <label for="account_id"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-200">Account</label>
-                            <select id="account_id" name="account_id"
-                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600  dark:text-gray-200 focus:ring-blue-500 focus:border-blue-500"
-                                required>
-
-                                @if ($accounts->isEmpty())
-                                    <option value="" disabled selected>👀 Hmm... no accounts yet!</option>
-                                @else
-                                    <option value="" disabled>🔍 Pilih akun keuangan...</option>
-                                    @foreach ($accounts as $account)
-                                        <option value="{{ $account->id }}"
-                                            {{ old('account_id', $transaction->account_id) == $account->id ? 'selected' : '' }}>
-                                            {{ $account->name }}</option>
-                                    @endforeach
-                                @endif
-
-                            </select>
-                            @error('account_id')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-
-                            <div class="mt-2">
-                                <a href="{{ route('accounts.index') }}"
-                                    class="text-blue-600 text-sm dark:text-blue-400 font-medium hover:underline">
-                                    Manage or Add Account
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-end">
-                            <button type="submit"
-                                class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition">
-                                Save Transaction
+                                Manage or Add Category
                             </button>
                         </div>
                     </div>
-                </form>
-            </div>
+
+
+                    <div>
+                        <label for="account_id"
+                               class="block text-sm font-medium text-gray-700 dark:text-gray-200">Account</label>
+                        <select id="account_id" name="account_id"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm dark:bg-gray-700 dark:border-gray-600  dark:text-gray-200 focus:ring-blue-500 focus:border-blue-500"
+                                required>
+
+                            @if ($accounts->isEmpty())
+                                <option value="" disabled selected>👀 Hmm... no accounts yet!</option>
+                            @else
+                                <option value="" disabled>🔍 Pilih akun keuangan...</option>
+                                @foreach ($accounts as $account)
+                                    <option value="{{ $account->id }}"
+                                        {{ old('account_id', $transaction->account_id) == $account->id ? 'selected' : '' }}>
+                                        {{ $account->name }}</option>
+                                @endforeach
+                            @endif
+
+                        </select>
+                        @error('account_id')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+
+                        <div class="mt-2">
+                            <a href="{{ route('accounts.index') }}"
+                               class="text-blue-600 text-sm dark:text-blue-400 font-medium hover:underline">
+                                Manage or Add Account
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="submit"
+                                class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition">
+                            Save Transaction
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 
