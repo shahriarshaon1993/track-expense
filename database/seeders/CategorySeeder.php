@@ -82,6 +82,15 @@ class CategorySeeder extends Seeder
             ['name' => 'Other', 'description' => 'Other categories not listed above', 'is_default' => true],
 
             ['name' => 'Transfer', 'description' => 'Cash withdrawn from bank and added to cash wallet for future expenses', 'is_default' => true],
+
+            // Loan
+            ['name' => 'Loan Taken', 'description' => 'Money borrowed from others, banks, or credit sources', 'is_default' => true],
+            ['name' => 'Loan Given', 'description' => 'Money lent to others that you expect to receive back', 'is_default' => true],
+            ['name' => 'Loan Repayment', 'description' => 'Repayment of borrowed money (EMI or full payment)', 'is_default' => true],
+            ['name' => 'Loan Collection', 'description' => 'Money received back from loans you gave to others', 'is_default' => true],
+
+            ['name' => 'Balance Adjustment', 'description' => 'Manual adjustment to match actual balance', 'is_default' => true],
+            ['name' => 'Past Expenses (Unknown)', 'description' => 'Expenses for previous months without exact breakdown', 'is_default' => true],
         ];
 
         foreach ($categories as $category) {

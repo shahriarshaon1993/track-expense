@@ -416,13 +416,13 @@
                             Financial Statistics
                         </h3>
 
-                        <div class="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-1 gap-3 sm:gap-4">
                             <!-- Income vs Expense -->
                             <div class="bg-gray-50 dark:bg-gray-700/70 p-3 rounded-md transition hover:shadow-md">
                                 <h4 class="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">
                                     Income vs Expense
                                 </h4>
-                                <div class="h-40 sm:h-48 md:h-56">
+                                <div class="h-52 sm:h-62 md:h-72">
                                     <canvas id="incomeExpenseChart"></canvas>
                                 </div>
                             </div>
